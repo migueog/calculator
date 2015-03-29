@@ -6,16 +6,10 @@ import java.awt.event.*;
 public class calculatorFrame extends JFrame implements ActionListener {
 
 	/* TO DO
-	 * 
-	 * - Chained operations
-	 * - Error handling for
-	 * 		- Successive operators
-	 * 		- Division by 0
-	 * 		- Multiply decimal points
-	 * - Add decimal button functionality
 	 * - Clear Last button
 	 */
 	
+	//VARIABLES
 	private static final int FRAME_WIDTH = 300;
 	private static final int FRAME_HEIGHT = 400;
 	private JPanel buttonPanel, clearButtonPanel;
@@ -29,6 +23,8 @@ public class calculatorFrame extends JFrame implements ActionListener {
 	public double secondNum = 0;
 	public String secondNumString = "";
 	public double result = 0;
+	public double tempResult = 0;
+	public String completeTextArea[];
 	
 	//BOOLEANS
 	boolean flag = false;
@@ -36,6 +32,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 	boolean minusFlag = false;
 	boolean multiplyFlag = false;
 	boolean divideFlag = false;
+	boolean decimalFlag = false;
 	boolean duplicateOperatorFlag = false;
 	
 	public calculatorFrame() {
@@ -126,6 +123,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "1";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -139,6 +137,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "2";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		} 
@@ -152,6 +151,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "3";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -165,6 +165,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "4";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -178,6 +179,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "5";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -191,6 +193,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "6";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -204,6 +207,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "7";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -217,6 +221,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "8";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -230,6 +235,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "9";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}
 		}
@@ -243,19 +249,85 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				textArea.setText(textArea.getText() + e.getActionCommand());
 			}else if(flag == true){
 				secondNumString += "0";
+				duplicateOperatorFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand());
+			}
+		}
+		
+		//DECIMAL
+		else if (e.getSource() == decimal){
+			if (flag == false && decimalFlag == false){
+				System.out.println("Decimal");
+				firstNumString += ".";
+				decimalFlag = true;
+				System.out.println(firstNumString);
+				textArea.setText(textArea.getText() + e.getActionCommand());
+			}else if(flag == true && decimalFlag == false){
+				secondNumString += ".";
+				decimalFlag = true;
+				duplicateOperatorFlag = false;
+				textArea.setText(textArea.getText() + e.getActionCommand());
+			}else{
+				textArea.setText(textArea.getText() + "\n" +"Error. A decimal point has already been used." + "\n");
 			}
 		}
 		
 		//ADDITION
 		else if (e.getSource() == plus){
+			System.out.println("FirstNum=" + firstNumString + "\n" + "SecondNum=" + secondNumString);
 			if(duplicateOperatorFlag == true){
 				textArea.setText(textArea.getText() + "\n" + "Operator + has been ignored" + "\n");
-			}else{
+			}else if(flag ==  true && duplicateOperatorFlag == false && plusFlag == true){
+				System.out.println("derp");
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum += secondNum;
+				secondNumString = "";
+				textArea.setText(textArea.getText() + "+" + "\n");
+			}else if(flag == true && minusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum -= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+				
+				minusFlag = false;
+				plusFlag = true;
+				textArea.setText(textArea.getText() + "+" + "\n");
+			}else if(flag == true && multiplyFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum *= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				multiplyFlag = false;
+				plusFlag = true;
+				textArea.setText(textArea.getText() + "+" + "\n");
+			}else if(flag == true && divideFlag == true){
+				if(Double.parseDouble(secondNumString) == 0){
+					textArea.setText(textArea.getText() + "\n" + "Cannot divide by Zero. Please perform a new calculation" + "\n");
+				}else{
+					firstNum = Double.parseDouble(firstNumString);
+					secondNum = Double.parseDouble(secondNumString);
+					firstNum /= secondNum;
+					firstNumString = String.valueOf(firstNum);
+					secondNumString = "";
+					System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+	
+					divideFlag = false;
+					plusFlag = true;
+					textArea.setText(textArea.getText() + "+" + "\n");
+				}
+			}
+			else{
 				firstNum = Double.parseDouble(firstNumString);
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n");
 				flag = true;
 				plusFlag = true;
+				decimalFlag = false;
 				duplicateOperatorFlag = true;
 			}
 		}
@@ -264,47 +336,193 @@ public class calculatorFrame extends JFrame implements ActionListener {
 		else if(e.getSource() == minus){
 			if(duplicateOperatorFlag == true){
 				textArea.setText(textArea.getText() + "\n" + "Operator - has been ignored" + "\n");
-			}else{
+			}else if(flag ==  true && duplicateOperatorFlag == false && minusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum -= secondNum;
+				
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+				textArea.setText(textArea.getText() + "-" + "\n");
+			}else if(flag == true && plusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum += secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				plusFlag = false;
+				minusFlag = true;
+				textArea.setText(textArea.getText() + "-" + "\n");
+			}else if(flag == true && multiplyFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum *= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				multiplyFlag = false;
+				minusFlag = true;
+				textArea.setText(textArea.getText() + "-" + "\n");
+			}else if(flag == true && divideFlag == true){
+				if(Double.parseDouble(secondNumString) == 0){
+					textArea.setText(textArea.getText() + "\n" + "Cannot divide by Zero. Please perform a new calculation" + "\n");
+				}else{
+					firstNum = Double.parseDouble(firstNumString);
+					secondNum = Double.parseDouble(secondNumString);
+					firstNum /= secondNum;
+					firstNumString = String.valueOf(firstNum);
+					secondNumString = "";
+					System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+	
+					divideFlag = false;
+					minusFlag = true;
+					textArea.setText(textArea.getText() + "-" + "\n");
+				}
+			}
+			else{
 				firstNum = Double.parseDouble(firstNumString);
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n");
 				flag = true;
 				minusFlag = true;
+				decimalFlag = false;
 				duplicateOperatorFlag = true;
 			}
 		}
 		
 		//MULTIPLICATION
 		else if(e.getSource() == multiply){
+			System.out.println("FirstNum=" + firstNumString + "\n" + "SecondNum=" + secondNumString);
 			if(duplicateOperatorFlag == true){
 				textArea.setText(textArea.getText() + "\n" + "Operator * has been ignored" + "\n");
-			}else{
+			}else if(flag ==  true && duplicateOperatorFlag == false && multiplyFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum *= secondNum;
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				textArea.setText(textArea.getText() + "*" + "\n");
+			}else if(flag == true && minusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum -= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				minusFlag = false;
+				multiplyFlag = true;
+				textArea.setText(textArea.getText() + "*" + "\n");
+			}else if(flag == true && plusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum += secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				plusFlag = false;
+				multiplyFlag = true;
+				textArea.setText(textArea.getText() + "*" + "\n");
+			}else if(flag == true && divideFlag == true){
+				if(Double.parseDouble(secondNumString) == 0){
+					textArea.setText(textArea.getText() + "\n" + "Cannot divide by Zero. Please perform a new calculation" + "\n");
+				}else{
+					firstNum = Double.parseDouble(firstNumString);
+					secondNum = Double.parseDouble(secondNumString);
+					firstNum /= secondNum;
+					firstNumString = String.valueOf(firstNum);
+					secondNumString = "";
+					System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+	
+					divideFlag = false;
+					multiplyFlag = true;
+					textArea.setText(textArea.getText() + "*" + "\n");
+				}
+			}
+			else{
 				firstNum = Double.parseDouble(firstNumString);
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n");
 				flag = true;
-				minusFlag = true;
+				multiplyFlag = true;
+				decimalFlag = flag;
 				duplicateOperatorFlag = true;
 			}
 		}
 		
 		//DIVISION
 		else if(e.getSource() == divide){
+			System.out.println("FirstNum=" + firstNumString + "\n" + "SecondNum=" + secondNumString);
 			if(duplicateOperatorFlag == true){
 				textArea.setText(textArea.getText() + "\n" + "Operator / has been ignored" + "\n");
-			}else{
+			}
+			else if(flag ==  true && duplicateOperatorFlag == false && divideFlag == true){
+				if(Double.parseDouble(secondNumString) == 0){
+					textArea.setText(textArea.getText() + "\n" + "Cannot divide by Zero. Please perform a new calculation" + "\n");
+				}else{
+					firstNum = Double.parseDouble(firstNumString);
+					secondNum = Double.parseDouble(secondNumString);
+					firstNum /= secondNum;
+					secondNumString = "";
+					System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+	
+					textArea.setText(textArea.getText() + "/" + "\n");
+				}
+			}else if(flag == true && minusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum -= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				minusFlag = false;
+				divideFlag = true;
+				textArea.setText(textArea.getText() + "/" + "\n");
+			}else if(flag == true && multiplyFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum *= secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				multiplyFlag = false;
+				divideFlag = true;
+				textArea.setText(textArea.getText() + "/" + "\n");
+			}else if(flag == true && plusFlag == true){
+				firstNum = Double.parseDouble(firstNumString);
+				secondNum = Double.parseDouble(secondNumString);
+				firstNum += secondNum;
+				firstNumString = String.valueOf(firstNum);
+				secondNumString = "";
+				System.out.println("FirstNum=" + firstNum + "\n" + "SecondNum=" + secondNum);
+
+				plusFlag = false;
+				divideFlag = true;
+				textArea.setText(textArea.getText() + "/" + "\n");
+			}
+			else{
 				firstNum = Double.parseDouble(firstNumString);
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n");
 				flag = true;
 				divideFlag = true;
+				decimalFlag = false;
 				duplicateOperatorFlag = true;
 			}
 		}
 		
 		//EQUALS
 		else if(e.getSource() == equals){
+			System.out.println("FirstNum=" + firstNumString + "\n" + "SecondNum=" + secondNumString);
 			if (plusFlag == true) {
 				secondNum = Double.parseDouble(secondNumString);
 				result = firstNum + secondNum;
 				plusFlag = false;
+				decimalFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n" + result + "\n");
 			}
 			
@@ -312,6 +530,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				secondNum = Double.parseDouble(secondNumString);
 				result = firstNum - secondNum;
 				minusFlag = false;
+				decimalFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n" + result + "\n");
 			}
 			
@@ -319,14 +538,20 @@ public class calculatorFrame extends JFrame implements ActionListener {
 				secondNum = Double.parseDouble(secondNumString);
 				result = firstNum * secondNum;
 				multiplyFlag = false;
+				decimalFlag = false;
 				textArea.setText(textArea.getText() + e.getActionCommand() + "\n" + result + "\n");
 			}
 			
 			else if (divideFlag == true) {
-				secondNum = Double.parseDouble(secondNumString);
-				result = firstNum / secondNum;
-				divideFlag = false;
-				textArea.setText(textArea.getText() + e.getActionCommand() + "\n" + result + "\n");
+				if(Double.parseDouble(secondNumString) == 0){
+					textArea.setText(textArea.getText() + "\n" + "Cannot divide by Zero. Please perform a new calculation" + "\n");
+				}else{
+					secondNum = Double.parseDouble(secondNumString);
+					result = firstNum / secondNum;
+					divideFlag = false;
+					decimalFlag = false;
+					textArea.setText(textArea.getText() + e.getActionCommand() + "\n" + result + "\n");
+				}
 			}
 			
 			firstNumString = "";
@@ -339,6 +564,7 @@ public class calculatorFrame extends JFrame implements ActionListener {
 			divideFlag = false;
 			multiplyFlag = false;
 			duplicateOperatorFlag = false;
+			decimalFlag = false;
 		}
 		
 		//Clear All
@@ -352,8 +578,68 @@ public class calculatorFrame extends JFrame implements ActionListener {
 			minusFlag = false;
 			divideFlag = false;
 			multiplyFlag = false;
+			decimalFlag = false;
 			duplicateOperatorFlag = false;
 			textArea.setText("");
+		}
+		
+		//Clear Last
+		else if(e.getSource() == clearLast){
+			String textAreaLength = textArea.getText();
+			String lastChar = textArea.getText().substring(textArea.getText().length() - 1);
+			//System.out.println(lastChar);
+			System.out.println("Flag is = " + flag);
+			if (flag == false){
+				if (lastChar.equals("+")){
+					plusFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("-")){
+					minusFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("/")){
+					divideFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("*")){
+					multiplyFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}
+				else{
+					firstNumString = firstNumString.substring(0, firstNumString.length()-1);
+					//System.out.println(firstNumString);
+					//System.out.println(lastChar);
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}
+			}else if(flag == true){
+				if(secondNumString.length() > 0){
+					secondNumString = secondNumString.substring(0, secondNumString.length()-1);
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if (lastChar.equals("+")){
+					plusFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("-")){
+					minusFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("/")){
+					divideFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}else if(lastChar.equals("*")){
+					multiplyFlag = false;
+					duplicateOperatorFlag = false;
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}
+				else{
+					flag = false;
+					firstNumString = firstNumString.replace("\n", "");
+					textArea.setText(textAreaLength.substring(0, textAreaLength.length()-1));
+				}
+			}
 		}
 	}
 }
